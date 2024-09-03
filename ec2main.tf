@@ -1,18 +1,24 @@
-module "ec2_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
 
-  for_each = toset(["one", "two", "three"])
+  required_version = ">= 1.2.0"
+}
 
-  name = "instance-${each.key}"
+provider "aws" {
+  region  = "us-east-1"
+}
 
-  instance_type          = "t2.micro"
-  key_name               = "user1"
-  monitoring             = true
-  vpc_security_group_ids = ["sg-0a5eb27a14ccd2df8"]
-  subnet_id              = "subnet-0d8bfaf0873ea77c6"
+resource "aws_instance" "app_server" {
+  ami           = "ami-066784287e358dad1"
+  instance_type = "t2.micro"
+  
 
   tags = {
-    Terraform   = "true"
-    Environment = "dev"
+    Name = "ExampleAppServerInstance"
   }
 }
